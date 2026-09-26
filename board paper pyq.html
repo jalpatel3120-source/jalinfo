@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="theme-color" content="#070b1f">
+<title>QuantumVerse | Physics Explorer</title>
+<style>
+:root{--bg:#070b1f;--card:#101735;--card2:#151e43;--text:#eef3ff;--muted:#aab5d6;--cyan:#54e6ff;--violet:#9b7bff;--pink:#ff67c8;--green:#62f2a2;--border:rgba(255,255,255,.1);--shadow:0 20px 60px rgba(0,0,0,.3)}
+*{box-sizing:border-box;scroll-behavior:smooth}
+body{margin:0;background:radial-gradient(circle at 20% 0%,#18245a 0,#070b1f 38%,#040611 100%);color:var(--text);font-family:Inter,system-ui,-apple-system,Segoe UI,Arial,sans-serif;line-height:1.65;overflow-x:hidden}
+body.light{--bg:#f4f7ff;--card:#fff;--card2:#eef3ff;--text:#10172e;--muted:#56617b;--border:rgba(10,20,60,.12);background:#f4f7ff}
+a{color:inherit;text-decoration:none}
+button,input,textarea,select{font:inherit}
+button{cursor:pointer}
+nav{position:fixed;top:0;left:0;right:0;z-index:50;display:flex;align-items:center;justify-content:space-between;padding:13px 5%;background:rgba(7,11,31,.75);backdrop-filter:blur(18px);border-bottom:1px solid var(--border)}
+.light nav{background:rgba(255,255,255,.78)}
+.logo{font-weight:900;font-size:1.15rem;letter-spacing:.5px}.logo span{color:var(--cyan)}
+.navlinks{display:flex;gap:20px;align-items:center}.navlinks a{color:var(--muted);font-size:.92rem}.navlinks a:hover{color:var(--cyan)}
+.navbtn{border:1px solid var(--border);background:var(--card);color:var(--text);border-radius:12px;padding:8px 12px}
+.menu{display:none}
+.hero{min-height:100vh;padding:140px 7% 80px;display:grid;grid-template-columns:1.05fr .95fr;gap:40px;align-items:center;position:relative}
+.badge{display:inline-block;padding:7px 13px;border:1px solid rgba(84,230,255,.3);background:rgba(84,230,255,.08);color:var(--cyan);border-radius:999px;font-size:.8rem;font-weight:800}
+h1{font-size:clamp(3rem,7vw,6.8rem);line-height:.95;margin:20px 0;background:linear-gradient(100deg,#fff,var(--cyan),#c8a8ff);-webkit-background-clip:text;color:transparent}
+h2{font-size:clamp(2rem,4vw,3.2rem);margin:0 0 12px}h3{margin-top:0}
+.lead{font-size:1.1rem;color:var(--muted);max-width:650px}
+.ctas{display:flex;gap:12px;flex-wrap:wrap;margin-top:28px}
+.btn{padding:12px 18px;border-radius:14px;border:1px solid var(--border);background:linear-gradient(135deg,var(--cyan),var(--violet));color:#061020;font-weight:900;box-shadow:0 12px 30px rgba(84,230,255,.15)}
+.btn.alt{background:var(--card);color:var(--text)}
+section{padding:90px 7%;position:relative}.sectionhead{max-width:850px;margin-bottom:35px}.eyebrow{color:var(--pink);font-weight:900;letter-spacing:2px;text-transform:uppercase;font-size:.75rem}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.card{background:linear-gradient(145deg,rgba(255,255,255,.06),rgba(255,255,255,.025));border:1px solid var(--border);border-radius:22px;padding:25px;box-shadow:var(--shadow);transition:.35s}
+.light .card{background:var(--card)}.card:hover{transform:translateY(-6px);border-color:rgba(84,230,255,.35)}
+.icon{font-size:2rem;margin-bottom:10px}.muted{color:var(--muted)}
+.formula{font-family:Georgia,serif;font-size:1.35rem;color:var(--cyan);padding:15px;background:#05091a;border-radius:14px;overflow:auto;margin:14px 0}
+.light .formula{background:#eef4ff}.tag{display:inline-block;padding:4px 9px;border-radius:999px;background:rgba(155,123,255,.13);color:#cbbcff;font-size:.72rem;margin:3px}
+.wavebox{height:330px;border-radius:25px;overflow:hidden;border:1px solid var(--border);background:#05091a;position:relative}
+canvas{width:100%;height:100%;display:block}
+.timeline{border-left:2px solid var(--violet);margin-left:12px;padding-left:25px}
+.timeline .item{margin:0 0 25px;position:relative}.timeline .item:before{content:"";position:absolute;left:-35px;top:7px;width:16px;height:16px;border-radius:50%;background:var(--cyan);box-shadow:0 0 20px var(--cyan)}
+.tablewrap{overflow-x:auto;border:1px solid var(--border);border-radius:18px}.tablewrap table{width:100%;border-collapse:collapse;min-width:620px}.tablewrap th,.tablewrap td{padding:13px;border-bottom:1px solid var(--border);text-align:left}.tablewrap th{color:var(--cyan)}
+.quiz{max-width:850px}.option{display:block;width:100%;text-align:left;margin:10px 0;padding:14px;border:1px solid var(--border);border-radius:14px;background:var(--card);color:var(--text)}.option:hover{border-color:var(--cyan)}
+#quizResult{margin-top:15px;font-weight:800}
+input,textarea,select{width:100%;padding:13px;border-radius:13px;border:1px solid var(--border);background:var(--card);color:var(--text);outline:none}textarea{min-height:130px;resize:vertical}.field{margin-bottom:15px}
+footer{padding:45px 7%;border-top:1px solid var(--border);text-align:center;color:var(--muted)}
+.progress{position:fixed;top:0;left:0;height:3px;background:linear-gradient(90deg,var(--cyan),var(--pink));z-index:100;width:0}
+.reveal{opacity:0;transform:translateY(25px);transition:.7s}.reveal.show{opacity:1;transform:none}
+.orbit{width:min(430px,90vw);aspect-ratio:1;margin:auto;position:relative;border:1px solid rgba(84,230,255,.2);border-radius:50%;box-shadow:0 0 80px rgba(84,230,255,.08) inset,0 0 60px rgba(155,123,255,.08)}
+.nucleus{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:95px;height:95px;border-radius:50%;display:grid;place-items:center;background:radial-gradient(circle,#ff92d9,#8e55ff);box-shadow:0 0 50px #9b7bff}
+.ring{position:absolute;inset:12%;border:1px dashed rgba(84,230,255,.5);border-radius:50%;animation:spin 10s linear infinite}
+.ring.r2{inset:27%;animation-duration:7s;animation-direction:reverse}.electron{position:absolute;width:14px;height:14px;border-radius:50%;background:var(--cyan);top:-7px;left:50%;box-shadow:0 0 20px var(--cyan)}
+@keyframes spin{to{transform:rotate(360deg)}}@keyframes float{50%{transform:translateY(-15px)}}
+.float{animation:float 4s ease-in-out infinite}
+.backtop{position:fixed;right:18px;bottom:18px;width:45px;height:45px;border-radius:50%;border:1px solid var(--border);background:var(--card);color:var(--text);z-index:20}
+@media(max-width:850px){.hero{grid-template-columns:1fr;padding-top:120px}.grid{grid-template-columns:1fr 1fr}.navlinks{display:none}.menu{display:block}.navlinks.open{display:flex;position:absolute;top:60px;left:0;right:0;background:var(--card);padding:18px;flex-direction:column}.wavebox{height:260px}}
+@media(max-width:560px){section{padding:65px 5%}.hero{padding-left:5%;padding-right:5%}.grid{grid-template-columns:1fr}h1{font-size:3.5rem}.card{padding:20px}.ctas .btn{width:100%;text-align:center}}
+</style>
+</head>
+<body>
+<div class="progress" id="progress"></div>
+<nav>
+<a class="logo" href="#home">⚛️ Quantum<span>Verse</span></a>
+<div class="navlinks" id="navlinks">
+<a href="#quantum">Quantum</a><a href="#ch8">Ch. 8</a><a href="#atoms">Atoms</a><a href="#formulas">Formulas</a><a href="#quiz">Quiz</a><a href="#feedback">Feedback</a>
+</div>
+<div><button class="navbtn" id="theme">☀️</button><button class="navbtn menu" id="menu">☰</button></div>
+</nav>
+
+<header class="hero" id="home">
+<div class="reveal">
+<span class="badge">STD 12 PHYSICS • QUANTUM & WAVES</span>
+<h1>Explore the<br>Quantum World.</h1>
+<p class="lead">An interactive school-project website connecting quantum mechanics, electromagnetic waves, atomic physics, formulas, visual simulations and quick revision.</p>
+<div class="ctas"><a class="btn" href="#quantum">Start Exploring →</a><a class="btn alt" href="#quiz">Take the Quiz</a></div>
+</div>
+<div class="orbit float reveal"><div class="ring"><i class="electron"></i></div><div class="ring r2"><i class="electron"></i></div><div class="nucleus">⚛</div></div>
+</header>
+
+<section id="quantum">
+<div class="sectionhead reveal"><div class="eyebrow">01 • Quantum Mechanics</div><h2>A different way to see nature</h2><p class="muted">Quantum mechanics describes physical systems at microscopic scales. Instead of always assigning a definite classical path, it uses states, probabilities and quantized physical quantities.</p></div>
+<div class="grid">
+<div class="card reveal"><div class="icon">🌊</div><h3>Wave–Particle Duality</h3><p class="muted">Light and matter can show wave-like and particle-like behaviour depending on the experiment.</p><div class="formula">λ = h / p</div><span class="tag">de Broglie</span></div>
+<div class="card reveal"><div class="icon">🎯</div><h3>Probability & Measurement</h3><p class="muted">A quantum state contains information used to calculate probabilities of measurement outcomes.</p><div class="formula">P ∝ |ψ|²</div><span class="tag">Born rule</span></div>
+<div class="card reveal"><div class="icon">🔢</div><h3>Quantization</h3><p class="muted">Some physical quantities can take discrete allowed values in bound quantum systems.</p><div class="formula">E = hf</div><span class="tag">Planck</span></div>
+</div>
+</section>
+
+<section>
+<div class="sectionhead reveal"><div class="eyebrow">Interactive Visual</div><h2>Electromagnetic wave simulator</h2><p class="muted">Electric and magnetic fields oscillate perpendicular to each other and to the direction of propagation.</p></div>
+<div class="wavebox reveal"><canvas id="wave"></canvas></div>
+</section>
+
+<section id="ch8">
+<div class="sectionhead reveal"><div class="eyebrow">02 • GSEB Std. 12 Physics</div><h2>Chapter 8 — Electromagnetic Waves</h2><p class="muted">The current GSEB chapter listing places Electromagnetic Waves at Chapter 8. This section is designed as a visual revision guide.</p></div>
+<div class="grid">
+<div class="card reveal"><h3>⚡ What are EM waves?</h3><p>Electromagnetic waves are oscillating electric and magnetic fields that propagate through space. In vacuum they travel at the speed of light.</p><div class="formula">c = 1 / √(μ₀ε₀)</div></div>
+<div class="card reveal"><h3>🧲 Maxwell's idea</h3><p>A changing electric field can be associated with a magnetic field, and changing magnetic fields are associated with electric fields. This leads to self-propagating electromagnetic waves.</p></div>
+<div class="card reveal"><h3>📡 Spectrum</h3><p>From lower to higher frequency: radio → microwave → infrared → visible → ultraviolet → X-ray → gamma ray.</p></div>
+</div>
+</section>
+
+<section>
+<div class="sectionhead reveal"><div class="eyebrow">The Spectrum</div><h2>One family, many applications</h2></div>
+<div class="tablewrap reveal"><table><thead><tr><th>Region</th><th>Typical use</th><th>Relative frequency</th></tr></thead><tbody>
+<tr><td>Radio</td><td>Broadcasting & communication</td><td>Lower</td></tr>
+<tr><td>Microwave</td><td>Radar & communication</td><td>↑</td></tr>
+<tr><td>Infrared</td><td>Thermal imaging & remote controls</td><td>↑</td></tr>
+<tr><td>Visible</td><td>Human vision & optical systems</td><td>↑</td></tr>
+<tr><td>Ultraviolet</td><td>Fluorescence & sterilization</td><td>↑</td></tr>
+<tr><td>X-ray</td><td>Medical imaging</td><td>↑</td></tr>
+<tr><td>Gamma</td><td>Nuclear/medical applications</td><td>Higher</td></tr>
+</tbody></table></div>
+</section>
+
+<section id="atoms">
+<div class="sectionhead reveal"><div class="eyebrow">03 • Atomic Physics</div><h2>From Rutherford to Bohr</h2><p class="muted">For completeness, the GSEB textbook sequence also includes Atoms as a later chapter. These concepts connect naturally to quantum ideas.</p></div>
+<div class="timeline">
+<div class="item reveal"><h3>Thomson model</h3><p class="muted">The early model pictured positive charge distributed through the atom with electrons embedded in it.</p></div>
+<div class="item reveal"><h3>Rutherford scattering</h3><p class="muted">Alpha-particle scattering led to the nuclear model: most of the atom is empty space, with positive charge concentrated in a small nucleus.</p></div>
+<div class="item reveal"><h3>Bohr model</h3><p class="muted">Bohr introduced allowed stationary states and quantized angular momentum for the hydrogen atom.</p><div class="formula">L = nh / 2π</div></div>
+<div class="item reveal"><h3>Hydrogen energy levels</h3><p class="muted">For hydrogen in the Bohr model, the bound-state energy is often written as:</p><div class="formula">Eₙ = −13.6 / n² eV</div></div>
+</div>
+</section>
+
+<section id="formulas">
+<div class="sectionhead reveal"><div class="eyebrow">04 • Formula Vault</div><h2>Quick revision sheet</h2></div>
+<div class="grid">
+<div class="card reveal"><h3>Photon energy</h3><div class="formula">E = hf = hc/λ</div><p class="muted">h = Planck's constant.</p></div>
+<div class="card reveal"><h3>Wave relation</h3><div class="formula">v = fλ</div><p class="muted">For EM waves in vacuum, v = c.</p></div>
+<div class="card reveal"><h3>de Broglie</h3><div class="formula">λ = h/p = h/mv</div><p class="muted">For a non-relativistic particle.</p></div>
+<div class="card reveal"><h3>Bohr angular momentum</h3><div class="formula">L = nh/2π</div><p class="muted">n = 1,2,3,...</p></div>
+<div class="card reveal"><h3>Hydrogen energy</h3><div class="formula">Eₙ = −13.6/n² eV</div><p class="muted">Bohr-model result for hydrogen.</p></div>
+<div class="card reveal"><h3>Photon transition</h3><div class="formula">hf = Eᵢ − E_f</div><p class="muted">Energy difference becomes photon energy.</p></div>
+</div>
+</section>
+
+<section id="quiz">
+<div class="sectionhead reveal"><div class="eyebrow">05 • Challenge</div><h2>Quick Physics Quiz</h2></div>
+<div class="card quiz reveal">
+<h3 id="qtext"></h3><div id="options"></div><div id="quizResult"></div>
+<button class="btn" id="next" style="margin-top:12px">Next Question →</button>
+</div>
+</section>
+
+<section id="feedback">
+<div class="sectionhead reveal"><div class="eyebrow">06 • Feedback</div><h2>Tell us what you think</h2><p class="muted">This demo stores feedback locally in your browser. It does not send it to a server.</p></div>
+<form class="card reveal" id="feedbackForm">
+<div class="field"><label>Name</label><input id="name" required placeholder="Your name"></div>
+<div class="field"><label>Rating</label><select id="rating"><option>⭐⭐⭐⭐⭐ Excellent</option><option>⭐⭐⭐⭐ Very good</option><option>⭐⭐⭐ Good</option><option>⭐⭐ Needs improvement</option><option>⭐ Poor</option></select></div>
+<div class="field"><label>Feedback</label><textarea id="message" required placeholder="What should we add?"></textarea></div>
+<button class="btn" type="submit">Submit Feedback</button><p id="feedbackMsg" class="muted"></p>
+</form>
+</section>
+
+<footer>⚛️ QuantumVerse • School Physics Project • Built with HTML, CSS & JavaScript in one file<br><small>Educational content is a concise revision guide; always verify exact exam wording against your current textbook.</small></footer>
+<button class="backtop" onclick="scrollTo({top:0,behavior:'smooth'})">↑</button>
+
+<script>
+const body=document.body;
+document.getElementById('theme').onclick=()=>{body.classList.toggle('light');document.getElementById('theme').textContent=body.classList.contains('light')?'🌙':'☀️'};
+document.getElementById('menu').onclick=()=>document.getElementById('navlinks').classList.toggle('open');
+document.querySelectorAll('.navlinks a').forEach(a=>a.onclick=()=>document.getElementById('navlinks').classList.remove('open'));
+window.addEventListener('scroll',()=>{let h=document.documentElement.scrollHeight-innerHeight;document.getElementById('progress').style.width=(scrollY/h*100)+'%'});
+const obs=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)e.target.classList.add('show')}),{threshold:.1});
+document.querySelectorAll('.reveal').forEach(e=>obs.observe(e));
+
+const canvas=document.getElementById('wave'),ctx=canvas.getContext('2d');
+function resize(){canvas.width=canvas.clientWidth*devicePixelRatio;canvas.height=canvas.clientHeight*devicePixelRatio;ctx.setTransform(devicePixelRatio,0,0,devicePixelRatio,0,0)}
+addEventListener('resize',resize);resize();
+let t=0;
+function draw(){
+let w=canvas.clientWidth,h=canvas.clientHeight;ctx.clearRect(0,0,w,h);
+ctx.globalAlpha=.18;ctx.strokeStyle='#54e6ff';for(let x=0;x<w;x+=35){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,h);ctx.stroke()}for(let y=0;y<h;y+=35){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(w,y);ctx.stroke()}ctx.globalAlpha=1;
+for(let type=0;type<2;type++){ctx.beginPath();for(let x=0;x<=w;x++){let y=h/2+(type?65:-65)*Math.sin(x*.025-t);if(x===0)ctx.moveTo(x,y);else ctx.lineTo(x,y)}ctx.strokeStyle=type?'#ff67c8':'#54e6ff';ctx.lineWidth=3;ctx.stroke()}
+ctx.fillStyle='#eef3ff';ctx.font='bold 14px system-ui';ctx.fillText('E field',20,h/2-75);ctx.fillText('B field',20,h/2+95);
+t+=.035;requestAnimationFrame(draw)}draw();
+
+const quiz=[
+['Which equation gives photon energy?',['E=mc²','E=hf','F=ma','V=IR'],1],
+['What is the speed of EM waves in vacuum approximately?',['3×10⁸ m/s','3×10⁶ m/s','9.8 m/s²','3×10³ m/s'],0],
+['What does λ = h/p represent?',['Ohm law','de Broglie relation','Coulomb law','Faraday law'],1],
+['Which region is visible to human eyes?',['Radio','X-ray','Visible','Gamma'],2],
+['In the Bohr model, angular momentum is quantized as:', ['L=nh/2π','L=mv²','L=hf','L=mc²'],0]
+];
+let qi=0,answered=false;
+function renderQ(){answered=false;document.getElementById('quizResult').textContent='';document.getElementById('qtext').textContent=(qi+1)+'. '+quiz[qi][0];let box=document.getElementById('options');box.innerHTML='';quiz[qi][1].forEach((o,i)=>{let b=document.createElement('button');b.className='option';b.textContent=o;b.onclick=()=>{if(answered)return;answered=true;document.getElementById('quizResult').textContent=i===quiz[qi][2]?'✅ Correct!':'❌ Not quite — review the formula vault.';document.getElementById('quizResult').style.color=i===quiz[qi][2]?'#62f2a2':'#ff8fbf'};box.appendChild(b)})}
+document.getElementById('next').onclick=()=>{qi=(qi+1)%quiz.length;renderQ()};renderQ();
+
+document.getElementById('feedbackForm').onsubmit=e=>{e.preventDefault();let item={name:name.value,rating:rating.value,message:message.value,date:new Date().toLocaleString()};let all=JSON.parse(localStorage.getItem('quantumFeedback')||'[]');all.push(item);localStorage.setItem('quantumFeedback',JSON.stringify(all));document.getElementById('feedbackMsg').textContent='✅ Thank you! Your feedback was saved on this device.';e.target.reset()};
+</script>
+</body>
+</html>
