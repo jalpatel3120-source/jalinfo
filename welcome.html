@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Welcome</title>
+   
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: Arial, sans-serif;
+    }
+
+    body {
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+
+      background:
+        radial-gradient(circle at top left, #673ab7, transparent 35%),
+        radial-gradient(circle at bottom right, #00bcd4, transparent 35%),
+        #090b18;
+
+      color: white;
+      overflow: hidden;
+    }
+
+    .welcome {
+      width: 90%;
+      max-width: 500px;
+      padding: 45px 30px;
+      text-align: center;
+
+      background: rgba(255,255,255,.10);
+      border: 1px solid rgba(255,255,255,.2);
+
+      backdrop-filter: blur(25px);
+      border-radius: 30px;
+
+      box-shadow: 0 25px 70px rgba(0,0,0,.4);
+
+      animation: appear .8s ease;
+    }
+
+    .icon {
+      width: 80px;
+      height: 80px;
+      margin: 0 auto 20px;
+
+      display: flex;
+      justify-content: center;
+      align-items: center;
+
+      border-radius: 50%;
+
+      font-size: 40px;
+
+      background: linear-gradient(
+        135deg,
+        #7c4dff,
+        #00bcd4
+      );
+
+      animation: pop .7s ease;
+    }
+
+    h1 {
+      font-size: 35px;
+      margin-bottom: 12px;
+    }
+
+    p {
+      color: #c5c8d8;
+      font-size: 16px;
+      margin-bottom: 25px;
+    }
+
+    .logout {
+      border: none;
+      padding: 13px 30px;
+
+      border-radius: 12px;
+
+      color: white;
+      font-size: 15px;
+      font-weight: bold;
+
+      background: linear-gradient(
+        135deg,
+        #7c4dff,
+        #00bcd4
+      );
+
+      cursor: pointer;
+    }
+
+    @keyframes appear {
+      from {
+        opacity: 0;
+        transform: translateY(40px) scale(.9);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    @keyframes pop {
+      from {
+        transform: scale(0);
+      }
+
+      to {
+        transform: scale(1);
+      }
+    }
+
+    @media(max-width:480px) {
+
+      .welcome {
+        padding: 35px 20px;
+      }
+
+      h1 {
+        font-size: 28px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="welcome">
+
+    <div class="icon">
+      ✓
+    </div>
+
+    <h1>Welcome! 🎉 to JAL'S WEBSITE </h1>
+
+    <p id="userEmail">
+      You have successfully logged in.
+    </p>
+
+    <button class="logout" id="logout">
+      Logout
+    </button>
+
+  </div>
+
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <script>
+
+    const SUPABASE_URL =
+      "https://wwkbtvyagxannxxgwzob.supabase.co";
+
+    const SUPABASE_KEY =
+      "sb_publishable_0OdDJEHwjZfY3MLQuR8QZA_7gLUsONd";
+
+    const supabaseClient =
+      window.supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_KEY
+      );
+
+
+    // Check logged-in user
+
+    async function checkUser() {
+
+      const {
+        data: { user }
+      } = await supabaseClient.auth.getUser();
+
+
+      if (!user) {
+
+        window.location.href = "index.html";
+
+        return;
+      }
+
+
+      document.getElementById("userEmail").textContent =
+        "Welcome! You are logged in as " + user.email;
+    }
+
+
+    checkUser();
+
+
+    // Logout
+
+    document.getElementById("logout").addEventListener(
+      "click",
+      async () => {
+
+        await supabaseClient.auth.signOut();
+
+        window.location.href ="index.html";
+
+      }
+    );
+
+  </script>
+
+</body>
+</html>
