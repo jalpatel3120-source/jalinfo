@@ -1,0 +1,1236 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Frequency Generator & Wave Calculator</title>
+
+<style>
+*{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
+}
+
+body{
+    font-family:Arial,Helvetica,sans-serif;
+    min-height:100vh;
+    background:
+        radial-gradient(circle at top,#172c50,#070b14 65%);
+    color:white;
+    padding:12px;
+}
+
+.container{
+    width:100%;
+    max-width:950px;
+    margin:auto;
+    background:rgba(12,19,35,.94);
+    border:1px solid rgba(255,255,255,.1);
+    border-radius:24px;
+    padding:22px;
+    box-shadow:0 20px 70px rgba(0,0,0,.5);
+}
+
+.header{
+    text-align:center;
+    margin-bottom:25px;
+}
+
+.header h1{
+    font-size:clamp(28px,7vw,48px);
+    margin-bottom:8px;
+}
+
+.header p{
+    color:#94a4c4;
+}
+
+.frequency-display{
+    text-align:center;
+    margin:15px 0 25px;
+}
+
+.frequency-value{
+    font-size:clamp(42px,12vw,78px);
+    font-weight:bold;
+    color:#61dafb;
+    text-shadow:0 0 25px rgba(97,218,251,.5);
+}
+
+.unit{
+    color:#9eacc7;
+    font-size:20px;
+}
+
+.wave-box{
+    height:270px;
+    width:100%;
+    background:#03070d;
+    border-radius:18px;
+    overflow:hidden;
+    border:1px solid rgba(255,255,255,.1);
+    margin-bottom:22px;
+}
+
+canvas{
+    width:100%;
+    height:100%;
+}
+
+.grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:16px;
+}
+
+.card{
+    background:rgba(255,255,255,.045);
+    border:1px solid rgba(255,255,255,.07);
+    border-radius:17px;
+    padding:18px;
+}
+
+.card h2{
+    font-size:19px;
+    margin-bottom:15px;
+    color:#e8f2ff;
+}
+
+label{
+    display:flex;
+    justify-content:space-between;
+    gap:10px;
+    margin-bottom:10px;
+    color:#cbd8ef;
+}
+
+input,select{
+    width:100%;
+    padding:12px;
+    border-radius:10px;
+    border:1px solid #34425e;
+    background:#080f1d;
+    color:white;
+    font-size:16px;
+    outline:none;
+}
+
+input[type=range]{
+    padding:0;
+    accent-color:#61dafb;
+}
+
+.result{
+    background:#071321;
+    border-radius:12px;
+    padding:13px;
+    margin-top:10px;
+    border-left:3px solid #61dafb;
+}
+
+.result .big{
+    font-size:22px;
+    font-weight:bold;
+    color:#61dafb;
+}
+
+.small{
+    font-size:12px;
+    color:#7f90ad;
+    margin-top:6px;
+}
+
+.wave-buttons{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:7px;
+}
+
+button{
+    border:none;
+    border-radius:10px;
+    padding:12px 8px;
+    color:white;
+    background:#202c45;
+    font-weight:bold;
+    cursor:pointer;
+    transition:.2s;
+}
+
+button:hover{
+    transform:translateY(-2px);
+}
+
+button.active{
+    background:#1976d2;
+    box-shadow:0 0 15px rgba(25,118,210,.5);
+}
+
+.presets{
+    display:grid;
+    grid-template-columns:repeat(5,1fr);
+    gap:7px;
+}
+
+.main-button{
+    width:100%;
+    padding:16px;
+    margin-top:18px;
+    font-size:18px;
+    background:#00a86b;
+}
+
+.main-button.stop{
+    background:#d93636;
+}
+
+.info{
+    text-align:center;
+    color:#71809d;
+    font-size:13px;
+    line-height:1.6;
+    margin-top:20px;
+}
+
+@media(max-width:700px){
+
+    .container{
+        padding:15px;
+        border-radius:20px;
+    }
+
+    .grid{
+        grid-template-columns:1fr;
+    }
+
+    .wave-box{
+        height:210px;
+    }
+
+    .wave-buttons{
+        grid-template-columns:repeat(2,1fr);
+    }
+
+    .presets{
+        grid-template-columns:repeat(3,1fr);
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<div class="header">
+    <h1>⚡ Frequency Lab</h1>
+    <p>Frequency Generator • Wave Calculator • Physics Lab</p>
+</div>
+
+<div class="frequency-display">
+    <div class="frequency-value" id="display">440</div>
+    <span class="unit">Hz</span>
+</div>
+
+<div class="wave-box">
+    <canvas id="waveCanvas"></canvas>
+</div>
+
+<div class="grid">
+
+<!-- FREQUENCY -->
+<div class="card">
+
+<h2>🎛 Frequency</h2>
+
+<label>
+    <span>Frequency</span>
+    <span id="rangeValue">440 Hz</span>
+</label>
+
+<input
+    type="range"
+    id="frequencySlider"
+    min="1"
+    max="100000"
+    value="440"
+    step="1"
+>
+
+<br><br>
+
+<label>
+    <span>Exact Frequency</span>
+    <span>1 Hz – 100 kHz</span>
+</label>
+
+<input
+    type="number"
+    id="frequencyInput"
+    min="1"
+    max="100000"
+    value="440"
+>
+
+</div>
+
+
+<!-- MEDIUM -->
+<div class="card">
+
+<h2>🌍 Wave Medium</h2>
+
+<label>Propagation Speed</label>
+
+<select id="medium">
+
+<option value="343">
+    Air — 343 m/s
+</option>
+
+<option value="1480">
+    Water — 1480 m/s
+</option>
+
+<option value="299792458">
+    Light / Vacuum — 299,792,458 m/s
+</option>
+
+<option value="custom">
+    Custom
+</option>
+
+</select>
+
+<br>
+
+<input
+    type="number"
+    id="customSpeed"
+    value="343"
+    min="0.000001"
+    step="any"
+    placeholder="Custom speed (m/s)"
+>
+
+</div>
+
+
+<!-- WAVELENGTH -->
+<div class="card">
+
+<h2>📏 Wavelength</h2>
+
+<div class="result">
+
+<div>Formula</div>
+
+<div class="big">
+λ = v / f
+</div>
+
+</div>
+
+<div class="result">
+
+<div>Wavelength</div>
+
+<div class="big" id="wavelength">
+0.7795 m
+</div>
+
+</div>
+
+<div class="small">
+λ = wavelength • v = wave speed • f = frequency
+</div>
+
+</div>
+
+
+<!-- DISTANCE -->
+<div class="card">
+
+<h2>🚀 Distance Traveled</h2>
+
+<label>
+    <span>Time</span>
+    <span>seconds</span>
+</label>
+
+<input
+    type="number"
+    id="timeInput"
+    value="1"
+    min="0"
+    step="any"
+>
+
+<div class="result">
+
+<div>Formula</div>
+
+<div class="big">
+d = v × t
+</div>
+
+</div>
+
+<div class="result">
+
+<div>Distance</div>
+
+<div class="big" id="distance">
+343 m
+</div>
+
+</div>
+
+</div>
+
+
+<!-- INTENSITY -->
+<div class="card">
+
+<h2>🔥 Intensity</h2>
+
+<div class="result">
+
+<div>Formula</div>
+
+<div class="big">
+I = P / A
+</div>
+
+</div>
+
+<label>
+    <span>Power</span>
+    <span>watts (W)</span>
+</label>
+
+<input
+    type="number"
+    id="powerInput"
+    value="1"
+    min="0"
+    step="any"
+>
+
+<br><br>
+
+<label>
+    <span>Area</span>
+    <span>m²</span>
+</label>
+
+<input
+    type="number"
+    id="areaInput"
+    value="1"
+    min="0.000001"
+    step="any"
+>
+
+<div class="result">
+
+<div>Intensity</div>
+
+<div class="big" id="intensity">
+1 W/m²
+</div>
+
+</div>
+
+</div>
+
+
+<!-- WAVEFORM -->
+<div class="card">
+
+<h2>〰 Waveform</h2>
+
+<div class="wave-buttons">
+
+<button class="wave active" data-wave="sine">
+Sine
+</button>
+
+<button class="wave" data-wave="square">
+Square
+</button>
+
+<button class="wave" data-wave="triangle">
+Triangle
+</button>
+
+<button class="wave" data-wave="sawtooth">
+Saw
+</button>
+
+</div>
+
+<br>
+
+<label>
+    <span>Selected</span>
+    <span id="waveName">Sine</span>
+</label>
+
+</div>
+
+
+<!-- VOLUME -->
+<div class="card">
+
+<h2>🔊 Generator Volume</h2>
+
+<label>
+    <span>Volume</span>
+    <span id="volumeValue">50%</span>
+</label>
+
+<input
+    type="range"
+    id="volumeSlider"
+    min="0"
+    max="100"
+    value="50"
+>
+
+<div class="small">
+Browser audio volume is not the same as physical acoustic intensity.
+</div>
+
+</div>
+
+
+<!-- PRESETS -->
+<div class="card">
+
+<h2>⚡ Quick Frequencies</h2>
+
+<div class="presets">
+
+<button data-frequency="1">1 Hz</button>
+<button data-frequency="10">10 Hz</button>
+<button data-frequency="100">100 Hz</button>
+<button data-frequency="440">440 Hz</button>
+<button data-frequency="1000">1 kHz</button>
+<button data-frequency="5000">5 kHz</button>
+<button data-frequency="10000">10 kHz</button>
+<button data-frequency="20000">20 kHz</button>
+<button data-frequency="50000">50 kHz</button>
+<button data-frequency="100000">100 kHz</button>
+
+</div>
+
+</div>
+
+</div>
+
+<button class="main-button" id="startButton">
+▶ Start Generator
+</button>
+
+<div class="info">
+
+Frequency range: 1 Hz → 100,000 Hz<br>
+
+Wavelength = speed ÷ frequency<br>
+
+Distance = speed × time<br>
+
+Intensity = power ÷ area
+
+</div>
+
+</div>
+
+
+<script>
+
+const canvas =
+document.getElementById("waveCanvas");
+
+const ctx =
+canvas.getContext("2d");
+
+const slider =
+document.getElementById("frequencySlider");
+
+const input =
+document.getElementById("frequencyInput");
+
+const display =
+document.getElementById("display");
+
+const rangeValue =
+document.getElementById("rangeValue");
+
+const medium =
+document.getElementById("medium");
+
+const customSpeed =
+document.getElementById("customSpeed");
+
+const timeInput =
+document.getElementById("timeInput");
+
+const powerInput =
+document.getElementById("powerInput");
+
+const areaInput =
+document.getElementById("areaInput");
+
+const wavelength =
+document.getElementById("wavelength");
+
+const distance =
+document.getElementById("distance");
+
+const intensity =
+document.getElementById("intensity");
+
+const volumeSlider =
+document.getElementById("volumeSlider");
+
+const volumeValue =
+document.getElementById("volumeValue");
+
+const startButton =
+document.getElementById("startButton");
+
+const waveName =
+document.getElementById("waveName");
+
+
+let frequency = 440;
+
+let waveform = "sine";
+
+let audioContext = null;
+
+let oscillator = null;
+
+let gainNode = null;
+
+let isPlaying = false;
+
+
+/* CANVAS */
+
+function resizeCanvas(){
+
+    const dpr =
+        window.devicePixelRatio || 1;
+
+    canvas.width =
+        canvas.clientWidth * dpr;
+
+    canvas.height =
+        canvas.clientHeight * dpr;
+
+    ctx.setTransform(
+        dpr,0,0,dpr,0,0
+    );
+}
+
+window.addEventListener(
+    "resize",
+    resizeCanvas
+);
+
+resizeCanvas();
+
+
+/* FORMAT NUMBER */
+
+function formatNumber(number){
+
+    if(!isFinite(number))
+        return "—";
+
+    if(number === 0)
+        return "0";
+
+    if(Math.abs(number) >= 1000000)
+        return number.toExponential(4);
+
+    if(Math.abs(number) < 0.001)
+        return number.toExponential(4);
+
+    return Number(
+        number.toPrecision(6)
+    ).toLocaleString();
+}
+
+
+/* SPEED */
+
+function getSpeed(){
+
+    if(medium.value === "custom"){
+
+        return Number(customSpeed.value) || 0;
+
+    }
+
+    return Number(medium.value);
+}
+
+
+/* CALCULATIONS */
+
+function calculate(){
+
+    const speed = getSpeed();
+
+    const f = frequency;
+
+    const t =
+        Number(timeInput.value) || 0;
+
+    const P =
+        Number(powerInput.value) || 0;
+
+    const A =
+        Number(areaInput.value) || 0;
+
+
+    /* WAVELENGTH */
+
+    if(f > 0 && speed > 0){
+
+        const lambda =
+            speed / f;
+
+        wavelength.textContent =
+            formatNumber(lambda) + " m";
+
+    }else{
+
+        wavelength.textContent = "—";
+
+    }
+
+
+    /* DISTANCE */
+
+    const d =
+        speed * t;
+
+    distance.textContent =
+        formatNumber(d) + " m";
+
+
+    /* INTENSITY */
+
+    if(A > 0){
+
+        const I =
+            P / A;
+
+        intensity.textContent =
+            formatNumber(I) + " W/m²";
+
+    }else{
+
+        intensity.textContent = "—";
+
+    }
+
+}
+
+
+/* FREQUENCY */
+
+function updateFrequency(value){
+
+    value =
+        Math.round(Number(value));
+
+    if(!isFinite(value))
+        return;
+
+    value =
+        Math.max(
+            1,
+            Math.min(100000,value)
+        );
+
+    frequency = value;
+
+    slider.value = value;
+
+    input.value = value;
+
+    display.textContent =
+        value.toLocaleString();
+
+    if(value >= 1000){
+
+        let khz =
+            value / 1000;
+
+        rangeValue.textContent =
+            khz.toLocaleString() +
+            " kHz";
+
+    }else{
+
+        rangeValue.textContent =
+            value + " Hz";
+
+    }
+
+
+    if(oscillator && audioContext){
+
+        oscillator.frequency
+            .setValueAtTime(
+                frequency,
+                audioContext.currentTime
+            );
+
+    }
+
+    calculate();
+
+}
+
+
+slider.addEventListener(
+    "input",
+    () => updateFrequency(slider.value)
+);
+
+
+input.addEventListener(
+    "input",
+    () => {
+
+        if(input.value !== "")
+            updateFrequency(input.value);
+
+    }
+);
+
+
+/* OTHER INPUTS */
+
+medium.addEventListener(
+    "change",
+    calculate
+);
+
+customSpeed.addEventListener(
+    "input",
+    calculate
+);
+
+timeInput.addEventListener(
+    "input",
+    calculate
+);
+
+powerInput.addEventListener(
+    "input",
+    calculate
+);
+
+areaInput.addEventListener(
+    "input",
+    calculate
+);
+
+
+/* WAVEFORM */
+
+document.querySelectorAll(
+    ".wave"
+).forEach(button => {
+
+    button.addEventListener(
+        "click",
+        () => {
+
+            document.querySelectorAll(
+                ".wave"
+            ).forEach(b =>
+                b.classList.remove("active")
+            );
+
+            button.classList.add("active");
+
+            waveform =
+                button.dataset.wave;
+
+            waveName.textContent =
+                waveform
+                .charAt(0)
+                .toUpperCase()
+                +
+                waveform.slice(1);
+
+            if(oscillator){
+
+                oscillator.type =
+                    waveform;
+
+            }
+
+        }
+    );
+
+});
+
+
+/* PRESETS */
+
+document.querySelectorAll(
+    "[data-frequency]"
+).forEach(button => {
+
+    button.addEventListener(
+        "click",
+        () => {
+
+            updateFrequency(
+                button.dataset.frequency
+            );
+
+        }
+    );
+
+});
+
+
+/* VOLUME */
+
+volumeSlider.addEventListener(
+    "input",
+    () => {
+
+        const volume =
+            Number(volumeSlider.value);
+
+        volumeValue.textContent =
+            volume + "%";
+
+        if(gainNode && audioContext){
+
+            gainNode.gain
+                .setTargetAtTime(
+                    volume / 100,
+                    audioContext.currentTime,
+                    0.01
+                );
+
+        }
+
+    }
+);
+
+
+/* AUDIO GENERATOR */
+
+startButton.addEventListener(
+    "click",
+    async () => {
+
+        if(!isPlaying){
+
+            audioContext =
+                new (
+                    window.AudioContext ||
+                    window.webkitAudioContext
+                )();
+
+            oscillator =
+                audioContext.createOscillator();
+
+            gainNode =
+                audioContext.createGain();
+
+            oscillator.type =
+                waveform;
+
+            oscillator.frequency.value =
+                frequency;
+
+            gainNode.gain.value =
+                Number(
+                    volumeSlider.value
+                ) / 100;
+
+            oscillator.connect(gainNode);
+
+            gainNode.connect(
+                audioContext.destination
+            );
+
+            oscillator.start();
+
+            isPlaying = true;
+
+            startButton.textContent =
+                "■ Stop Generator";
+
+            startButton.classList.add(
+                "stop"
+            );
+
+        }else{
+
+            if(oscillator){
+
+                oscillator.stop();
+
+                oscillator.disconnect();
+
+            }
+
+            if(audioContext){
+
+                await audioContext.close();
+
+            }
+
+            oscillator = null;
+
+            gainNode = null;
+
+            audioContext = null;
+
+            isPlaying = false;
+
+            startButton.textContent =
+                "▶ Start Generator";
+
+            startButton.classList.remove(
+                "stop"
+            );
+
+        }
+
+    }
+);
+
+
+/* ANIMATED WAVE */
+
+let phase = 0;
+
+function drawWave(){
+
+    const width =
+        canvas.clientWidth;
+
+    const height =
+        canvas.clientHeight;
+
+    ctx.clearRect(
+        0,0,width,height
+    );
+
+
+    /* GRID */
+
+    ctx.lineWidth = 1;
+
+    ctx.strokeStyle =
+        "rgba(255,255,255,.06)";
+
+
+    for(
+        let x=0;
+        x<width;
+        x+=40
+    ){
+
+        ctx.beginPath();
+
+        ctx.moveTo(x,0);
+
+        ctx.lineTo(x,height);
+
+        ctx.stroke();
+
+    }
+
+
+    for(
+        let y=0;
+        y<height;
+        y+=40
+    ){
+
+        ctx.beginPath();
+
+        ctx.moveTo(0,y);
+
+        ctx.lineTo(width,y);
+
+        ctx.stroke();
+
+    }
+
+
+    /* CENTER */
+
+    ctx.strokeStyle =
+        "rgba(97,218,251,.25)";
+
+    ctx.beginPath();
+
+    ctx.moveTo(
+        0,
+        height/2
+    );
+
+    ctx.lineTo(
+        width,
+        height/2
+    );
+
+    ctx.stroke();
+
+
+    /* WAVE */
+
+    ctx.beginPath();
+
+    const center =
+        height/2;
+
+    const amplitude =
+        height*.32;
+
+
+    /*
+    Logarithmic visualization.
+
+    This keeps 1 Hz and 100 kHz
+    visually understandable even
+    though their real periods differ
+    enormously.
+    */
+
+    const cycles =
+        1 +
+        Math.log10(frequency)*2.2;
+
+
+    for(
+        let x=0;
+        x<width;
+        x++
+    ){
+
+        const t =
+            x/width;
+
+        const angle =
+            t *
+            Math.PI*2 *
+            cycles +
+            phase;
+
+        let y;
+
+
+        if(waveform==="sine"){
+
+            y =
+                Math.sin(angle);
+
+        }
+
+        else if(waveform==="square"){
+
+            y =
+                Math.sin(angle)>=0
+                ? 1
+                : -1;
+
+        }
+
+        else if(waveform==="triangle"){
+
+            y =
+                2/Math.PI *
+                Math.asin(
+                    Math.sin(angle)
+                );
+
+        }
+
+        else{
+
+            y =
+                2 *
+                (
+                    angle/(Math.PI*2)
+                    -
+                    Math.floor(
+                        angle/(Math.PI*2)+.5
+                    )
+                );
+
+        }
+
+
+        const py =
+            center -
+            y*amplitude;
+
+
+        if(x===0)
+            ctx.moveTo(x,py);
+        else
+            ctx.lineTo(x,py);
+
+    }
+
+
+    ctx.lineWidth = 3;
+
+    ctx.strokeStyle =
+        "#61dafb";
+
+    ctx.shadowBlur = 12;
+
+    ctx.shadowColor =
+        "#61dafb";
+
+    ctx.stroke();
+
+    ctx.shadowBlur = 0;
+
+
+    phase += .035;
+
+    requestAnimationFrame(
+        drawWave
+    );
+
+}
+
+
+/* INITIAL */
+
+updateFrequency(440);
+
+calculate();
+
+drawWave();
+
+</script>
+
+</body>
+</html>
+```
