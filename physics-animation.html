@@ -1,0 +1,1147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Modern Physics Lab — Photoelectric Effect & Young's Experiment</title>
+
+<style>
+*{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
+}
+
+body{
+    font-family:Arial, Helvetica, sans-serif;
+    background:#050816;
+    color:#fff;
+    overflow-x:hidden;
+}
+
+body::before{
+    content:"";
+    position:fixed;
+    inset:0;
+    background:
+        radial-gradient(circle at 20% 20%,rgba(0,180,255,.12),transparent 30%),
+        radial-gradient(circle at 80% 70%,rgba(170,70,255,.12),transparent 30%);
+    pointer-events:none;
+    z-index:-1;
+}
+
+/* HEADER */
+
+header{
+    min-height:100vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+    padding:30px 18px;
+}
+
+.hero{
+    max-width:950px;
+}
+
+.badge{
+    display:inline-block;
+    padding:8px 16px;
+    border:1px solid rgba(255,255,255,.2);
+    border-radius:30px;
+    background:rgba(255,255,255,.06);
+    color:#7dd3fc;
+    margin-bottom:20px;
+}
+
+h1{
+    font-size:clamp(42px,8vw,90px);
+    line-height:1;
+    background:linear-gradient(90deg,#60a5fa,#c084fc,#22d3ee);
+    -webkit-background-clip:text;
+    color:transparent;
+}
+
+.hero p{
+    max-width:700px;
+    margin:25px auto;
+    color:#aeb9d0;
+    font-size:18px;
+    line-height:1.7;
+}
+
+.scroll{
+    margin-top:45px;
+    animation:bounce 1.5s infinite;
+    color:#67e8f9;
+}
+
+@keyframes bounce{
+    50%{transform:translateY(10px)}
+}
+
+/* NAV */
+
+nav{
+    position:sticky;
+    top:0;
+    z-index:50;
+    display:flex;
+    justify-content:center;
+    gap:10px;
+    padding:12px;
+    background:rgba(5,8,22,.8);
+    backdrop-filter:blur(15px);
+    border-bottom:1px solid rgba(255,255,255,.08);
+}
+
+nav button{
+    border:0;
+    padding:11px 18px;
+    border-radius:25px;
+    background:#111a30;
+    color:#fff;
+    cursor:pointer;
+}
+
+nav button:hover{
+    background:#26365c;
+}
+
+/* SECTION */
+
+section{
+    width:min(1200px,94%);
+    margin:0 auto;
+    padding:80px 0;
+}
+
+.section-title{
+    text-align:center;
+    margin-bottom:40px;
+}
+
+.section-title h2{
+    font-size:clamp(30px,5vw,50px);
+}
+
+.section-title p{
+    color:#9aa8c4;
+    margin-top:10px;
+}
+
+/* CARDS */
+
+.card{
+    background:rgba(255,255,255,.045);
+    border:1px solid rgba(255,255,255,.1);
+    border-radius:25px;
+    padding:22px;
+    box-shadow:0 20px 60px rgba(0,0,0,.25);
+}
+
+/* PHOTOELECTRIC */
+
+.photo-layout{
+    display:grid;
+    grid-template-columns:1fr 310px;
+    gap:20px;
+}
+
+.canvas-box{
+    min-height:500px;
+    position:relative;
+    overflow:hidden;
+}
+
+canvas{
+    width:100%;
+    height:100%;
+    display:block;
+    border-radius:18px;
+    background:#030712;
+}
+
+.controls{
+    display:flex;
+    flex-direction:column;
+    gap:18px;
+}
+
+.control{
+    background:rgba(255,255,255,.04);
+    padding:15px;
+    border-radius:15px;
+}
+
+.control label{
+    display:flex;
+    justify-content:space-between;
+    color:#cbd5e1;
+    margin-bottom:10px;
+}
+
+input[type=range]{
+    width:100%;
+    accent-color:#38bdf8;
+}
+
+select{
+    width:100%;
+    padding:11px;
+    border-radius:10px;
+    background:#0d162b;
+    color:#fff;
+    border:1px solid #293856;
+}
+
+.formula{
+    margin-top:15px;
+    padding:15px;
+    border-radius:15px;
+    background:#071226;
+    color:#7dd3fc;
+    text-align:center;
+    font-size:18px;
+}
+
+.status{
+    margin-top:15px;
+    padding:13px;
+    border-radius:12px;
+    background:#071226;
+    color:#a5f3fc;
+}
+
+/* YOUNG */
+
+.young-layout{
+    display:grid;
+    grid-template-columns:1fr 310px;
+    gap:20px;
+}
+
+.young-canvas{
+    min-height:520px;
+}
+
+.explanation{
+    margin-top:25px;
+    line-height:1.8;
+    color:#c1cbe0;
+}
+
+.key{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:15px;
+    margin-top:25px;
+}
+
+.key div{
+    padding:18px;
+    text-align:center;
+    background:rgba(255,255,255,.04);
+    border-radius:15px;
+}
+
+.key strong{
+    display:block;
+    color:#67e8f9;
+    margin-bottom:6px;
+}
+
+/* INFO */
+
+.info-grid{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:18px;
+}
+
+.info-card{
+    padding:25px;
+    border-radius:20px;
+    background:linear-gradient(145deg,#101a31,#080e20);
+    border:1px solid rgba(255,255,255,.08);
+}
+
+.info-card h3{
+    color:#67e8f9;
+    margin-bottom:12px;
+}
+
+.info-card p{
+    color:#aeb9d0;
+    line-height:1.7;
+}
+
+/* FOOTER */
+
+footer{
+    text-align:center;
+    padding:50px 20px;
+    color:#7e8ba5;
+    border-top:1px solid rgba(255,255,255,.08);
+}
+
+/* MOBILE */
+
+@media(max-width:800px){
+
+    header{
+        min-height:90vh;
+    }
+
+    .hero p{
+        font-size:15px;
+    }
+
+    nav{
+        overflow-x:auto;
+        justify-content:flex-start;
+        white-space:nowrap;
+    }
+
+    section{
+        padding:55px 0;
+    }
+
+    .photo-layout,
+    .young-layout{
+        grid-template-columns:1fr;
+    }
+
+    .canvas-box,
+    .young-canvas{
+        min-height:400px;
+    }
+
+    .controls{
+        display:grid;
+        grid-template-columns:1fr 1fr;
+    }
+
+    .formula{
+        grid-column:1/-1;
+    }
+
+    .key,
+    .info-grid{
+        grid-template-columns:1fr;
+    }
+}
+
+@media(max-width:500px){
+
+    .controls{
+        grid-template-columns:1fr;
+    }
+
+    .canvas-box,
+    .young-canvas{
+        min-height:360px;
+    }
+
+    .card{
+        padding:12px;
+        border-radius:18px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<header id="home">
+    <div class="hero">
+        <div class="badge">CLASS 12 PHYSICS • MODERN PHYSICS LAB</div>
+
+        <h1>Quantum Light</h1>
+
+        <p>
+            Explore the particle nature of light through the
+            <b>Photoelectric Effect</b> and the wave nature of light
+            through <b>Young's Double-Slit Experiment</b>.
+        </p>
+
+        <div class="scroll">↓ Scroll to enter the laboratory</div>
+    </div>
+</header>
+
+<nav>
+    <button onclick="go('home')">Home</button>
+    <button onclick="go('photo')">Photoelectric</button>
+    <button onclick="go('young')">Young's Experiment</button>
+    <button onclick="go('theory')">Theory</button>
+</nav>
+
+
+<!-- PHOTOELECTRIC EFFECT -->
+
+<section id="photo">
+
+<div class="section-title">
+    <h2>⚡ Photoelectric Effect</h2>
+    <p>Watch photons strike a metal surface and eject electrons.</p>
+</div>
+
+<div class="photo-layout">
+
+<div class="card canvas-box">
+    <canvas id="photoCanvas"></canvas>
+</div>
+
+<div class="card controls">
+
+    <div class="control">
+        <label>
+            <span>Frequency</span>
+            <b id="freqValue">6.0</b>
+        </label>
+        <input
+            id="frequency"
+            type="range"
+            min="1"
+            max="12"
+            step=".1"
+            value="6">
+    </div>
+
+    <div class="control">
+        <label>
+            <span>Intensity</span>
+            <b id="intensityValue">60%</b>
+        </label>
+        <input
+            id="intensity"
+            type="range"
+            min="10"
+            max="100"
+            value="60">
+    </div>
+
+    <div class="control">
+        <label>
+            <span>Metal</span>
+        </label>
+
+        <select id="metal">
+            <option value="2.3">Cesium</option>
+            <option value="2.9">Potassium</option>
+            <option value="3.5">Sodium</option>
+            <option value="4.3">Zinc</option>
+            <option value="4.7">Copper</option>
+        </select>
+    </div>
+
+    <div class="status" id="photoStatus">
+        Waiting for photons...
+    </div>
+
+    <div class="formula">
+        E = hf<br>
+        K<sub>max</sub> = hf − φ
+    </div>
+
+</div>
+</div>
+
+</section>
+
+
+<!-- YOUNG EXPERIMENT -->
+
+<section id="young">
+
+<div class="section-title">
+    <h2>🌊 Young's Double-Slit Experiment</h2>
+    <p>Observe wave interference and the formation of bright and dark fringes.</p>
+</div>
+
+<div class="young-layout">
+
+<div class="card young-canvas">
+    <canvas id="youngCanvas"></canvas>
+</div>
+
+<div class="card controls">
+
+    <div class="control">
+        <label>
+            <span>Wavelength</span>
+            <b id="waveValue">550 nm</b>
+        </label>
+
+        <input
+            id="wavelength"
+            type="range"
+            min="400"
+            max="700"
+            value="550">
+    </div>
+
+    <div class="control">
+        <label>
+            <span>Slit Separation</span>
+            <b id="slitValue">40</b>
+        </label>
+
+        <input
+            id="slitseparation"
+            type="range"
+            min="20"
+            max="80"
+            value="40">
+    </div>
+
+    <div class="control">
+        <label>
+            <span>Animation Speed</span>
+            <b id="speedValue">1.0×</b>
+        </label>
+
+        <input
+            id="speed"
+            type="range"
+            min=".2"
+            max="3"
+            step=".1"
+            value="1">
+    </div>
+
+    <div class="formula">
+        d sin θ = nλ
+    </div>
+
+    <div class="status">
+        Constructive interference → Bright fringe<br><br>
+        Destructive interference → Dark fringe
+    </div>
+
+</div>
+
+</div>
+
+<div class="explanation">
+
+    <p>
+        In Young's double-slit experiment, coherent light reaches two narrow
+        slits. The waves emerging from the two slits overlap on the screen.
+        Depending on their phase difference, they produce constructive or
+        destructive interference.
+    </p>
+
+</div>
+
+<div class="key">
+
+    <div>
+        <strong>Bright</strong>
+        Constructive interference
+    </div>
+
+    <div>
+        <strong>Dark</strong>
+        Destructive interference
+    </div>
+
+    <div>
+        <strong>Fringes</strong>
+        Alternating pattern
+    </div>
+
+</div>
+
+</section>
+
+
+<!-- THEORY -->
+
+<section id="theory">
+
+<div class="section-title">
+    <h2>📚 Physics Behind The Animation</h2>
+    <p>Important Class 12 concepts</p>
+</div>
+
+<div class="info-grid">
+
+<div class="info-card">
+    <h3>Photon Energy</h3>
+
+    <p>
+        According to Planck's quantum theory, electromagnetic radiation
+        consists of photons. The energy of one photon is:
+    </p>
+
+    <br>
+
+    <p style="text-align:center;font-size:20px;color:#67e8f9">
+        E = hf
+    </p>
+</div>
+
+
+<div class="info-card">
+    <h3>Work Function</h3>
+
+    <p>
+        The minimum energy required to remove an electron from the surface
+        of a metal is called its work function φ.
+    </p>
+
+    <br>
+
+    <p style="text-align:center;font-size:20px;color:#67e8f9">
+        φ = hf₀
+    </p>
+</div>
+
+
+<div class="info-card">
+    <h3>Einstein Equation</h3>
+
+    <p>
+        Einstein explained the photoelectric effect using the conservation
+        of energy.
+    </p>
+
+    <br>
+
+    <p style="text-align:center;font-size:20px;color:#67e8f9">
+        K<sub>max</sub> = hf − φ
+    </p>
+</div>
+
+
+<div class="info-card">
+    <h3>Interference</h3>
+
+    <p>
+        When two coherent waves overlap, the resultant intensity depends
+        upon their phase difference.
+    </p>
+</div>
+
+
+<div class="info-card">
+    <h3>Constructive Interference</h3>
+
+    <p>
+        When waves arrive in phase, their amplitudes reinforce each other
+        and produce a bright fringe.
+    </p>
+</div>
+
+
+<div class="info-card">
+    <h3>Destructive Interference</h3>
+
+    <p>
+        When waves arrive out of phase, they cancel partially or completely,
+        producing a dark fringe.
+    </p>
+</div>
+
+</div>
+
+</section>
+
+
+<footer>
+    Modern Physics Interactive Lab • Class 12 Physics
+</footer>
+
+
+<script>
+
+/* =====================================
+   NAVIGATION
+===================================== */
+
+function go(id){
+    document.getElementById(id).scrollIntoView({
+        behavior:"smooth"
+    });
+}
+
+
+/* =====================================
+   PHOTOELECTRIC EFFECT
+===================================== */
+
+const pc = document.getElementById("photoCanvas");
+const pctx = pc.getContext("2d");
+
+const frequency = document.getElementById("frequency");
+const intensity = document.getElementById("intensity");
+const metal = document.getElementById("metal");
+
+const freqValue = document.getElementById("freqValue");
+const intensityValue = document.getElementById("intensityValue");
+const photoStatus = document.getElementById("photoStatus");
+
+let photons = [];
+let electrons = [];
+let photoTime = 0;
+
+function resizePhoto(){
+
+    const rect = pc.getBoundingClientRect();
+
+    pc.width = rect.width * devicePixelRatio;
+    pc.height = rect.height * devicePixelRatio;
+
+    pctx.setTransform(
+        devicePixelRatio,
+        0,
+        0,
+        devicePixelRatio,
+        0,
+        0
+    );
+}
+
+window.addEventListener("resize",resizePhoto);
+resizePhoto();
+
+
+function createPhoton(){
+
+    const rect = pc.getBoundingClientRect();
+
+    photons.push({
+        x:20,
+        y:80 + Math.random()*(rect.height-160),
+        speed:2.5 + frequency.value*.25,
+        size:3 + frequency.value*.15
+    });
+}
+
+
+function createElectron(y){
+
+    const rect = pc.getBoundingClientRect();
+
+    electrons.push({
+        x:rect.width*.49,
+        y:y,
+        vx:2 + frequency.value*.25,
+        vy:(Math.random()-.5)*1.4,
+        life:0
+    });
+}
+
+
+function photoAnimation(){
+
+    const rect = pc.getBoundingClientRect();
+    const w = rect.width;
+    const h = rect.height;
+
+    pctx.clearRect(0,0,w,h);
+
+    /* background */
+
+    pctx.fillStyle="#020617";
+    pctx.fillRect(0,0,w,h);
+
+    /* stars */
+
+    for(let i=0;i<35;i++){
+
+        let x=(i*83)%w;
+        let y=(i*47)%h;
+
+        pctx.fillStyle="rgba(255,255,255,.25)";
+        pctx.fillRect(x,y,1,1);
+    }
+
+
+    /* labels */
+
+    pctx.font="bold 15px Arial";
+
+    pctx.fillStyle="#7dd3fc";
+    pctx.fillText("PHOTONS",20,35);
+
+    pctx.fillStyle="#fbbf24";
+    pctx.fillText("METAL SURFACE",w*.39,35);
+
+    pctx.fillStyle="#a5f3fc";
+    pctx.fillText("ELECTRONS",w*.72,35);
+
+
+    /* metal */
+
+    const metalX=w*.48;
+
+    pctx.fillStyle="#64748b";
+    pctx.fillRect(metalX,60,15,h-120);
+
+    for(let y=70;y<h-70;y+=20){
+
+        pctx.fillStyle="rgba(255,255,255,.12)";
+        pctx.beginPath();
+        pctx.arc(metalX+7,y,4,0,Math.PI*2);
+        pctx.fill();
+    }
+
+
+    /* photons */
+
+    if(Math.random() < intensity.value/130){
+        createPhoton();
+    }
+
+    photons.forEach((p,index)=>{
+
+        p.x += p.speed;
+
+        /* photon glow */
+
+        const glow=pctx.createRadialGradient(
+            p.x,p.y,1,
+            p.x,p.y,18
+        );
+
+        glow.addColorStop(0,"rgba(96,165,250,.9)");
+        glow.addColorStop(1,"rgba(96,165,250,0)");
+
+        pctx.fillStyle=glow;
+        pctx.beginPath();
+        pctx.arc(p.x,p.y,18,0,Math.PI*2);
+        pctx.fill();
+
+        pctx.fillStyle="#60a5fa";
+        pctx.beginPath();
+        pctx.arc(p.x,p.y,p.size,0,Math.PI*2);
+        pctx.fill();
+
+
+        if(p.x>=metalX-5){
+
+            const workFunction=parseFloat(metal.value);
+
+            if(frequency.value > workFunction){
+
+                createElectron(p.y);
+            }
+
+            photons.splice(index,1);
+        }
+
+    });
+
+
+    /* electrons */
+
+    electrons.forEach((e,index)=>{
+
+        e.x += e.vx;
+        e.y += e.vy;
+        e.life++;
+
+        pctx.fillStyle="#fde68a";
+
+        pctx.shadowBlur=15;
+        pctx.shadowColor="#facc15";
+
+        pctx.beginPath();
+        pctx.arc(e.x,e.y,4,0,Math.PI*2);
+        pctx.fill();
+
+        pctx.shadowBlur=0;
+
+        if(e.x>w || e.life>300){
+            electrons.splice(index,1);
+        }
+
+    });
+
+
+    /* beam */
+
+    pctx.strokeStyle="rgba(96,165,250,.18)";
+    pctx.lineWidth=1;
+
+    for(let y=70;y<h-70;y+=25){
+
+        pctx.beginPath();
+        pctx.moveTo(20,y);
+        pctx.lineTo(metalX-10,y);
+        pctx.stroke();
+    }
+
+
+    /* status */
+
+    const workFunction=parseFloat(metal.value);
+
+    if(frequency.value<=workFunction){
+
+        photoStatus.innerHTML=
+        "❌ Frequency below threshold — no photoelectrons are emitted.";
+
+    }else{
+
+        photoStatus.innerHTML=
+        "⚡ Photoelectrons emitted! Increasing intensity increases the number of photons.";
+    }
+
+
+    requestAnimationFrame(photoAnimation);
+}
+
+
+frequency.addEventListener("input",()=>{
+    freqValue.textContent=parseFloat(frequency.value).toFixed(1);
+});
+
+intensity.addEventListener("input",()=>{
+    intensityValue.textContent=intensity.value+"%";
+});
+
+photoAnimation();
+
+
+/* =====================================
+   YOUNG DOUBLE SLIT
+===================================== */
+
+const yc=document.getElementById("youngCanvas");
+const yctx=yc.getContext("2d");
+
+const wavelength=document.getElementById("wavelength");
+const slitSeparation=document.getElementById("slitseparation");
+const speed=document.getElementById("speed");
+
+const waveValue=document.getElementById("waveValue");
+const slitValue=document.getElementById("slitValue");
+const speedValue=document.getElementById("speedValue");
+
+let t=0;
+
+
+function resizeYoung(){
+
+    const rect=yc.getBoundingClientRect();
+
+    yc.width=rect.width*devicePixelRatio;
+    yc.height=rect.height*devicePixelRatio;
+
+    yctx.setTransform(
+        devicePixelRatio,
+        0,
+        0,
+        devicePixelRatio,
+        0,
+        0
+    );
+}
+
+window.addEventListener("resize",resizeYoung);
+resizeYoung();
+
+
+function drawYoung(){
+
+    const rect=yc.getBoundingClientRect();
+    const w=rect.width;
+    const h=rect.height;
+
+    yctx.clearRect(0,0,w,h);
+
+    yctx.fillStyle="#020617";
+    yctx.fillRect(0,0,w,h);
+
+
+    const sourceX=70;
+    const slitX=w*.35;
+    const screenX=w*.88;
+
+    const center=h/2;
+
+    const sep=parseFloat(slitSeparation.value);
+
+    const slit1=center-sep;
+    const slit2=center+sep;
+
+
+    /* incoming waves */
+
+    yctx.strokeStyle="rgba(96,165,250,.35)";
+    yctx.lineWidth=1;
+
+    for(let x=10;x<slitX-15;x+=25){
+
+        yctx.beginPath();
+
+        for(let y=0;y<h;y+=4){
+
+            const wave=
+                Math.sin(
+                    y*.08 - t*.08
+                );
+
+            const yy=y+wave*3;
+
+            if(y===0)
+                yctx.moveTo(x,yy);
+            else
+                yctx.lineTo(x,yy);
+        }
+
+        yctx.stroke();
+    }
+
+
+    /* slit barrier */
+
+    yctx.fillStyle="#64748b";
+
+    yctx.fillRect(
+        slitX-5,
+        0,
+        10,
+        slit1-8
+    );
+
+    yctx.fillRect(
+        slitX-5,
+        slit1+8,
+        10,
+        slit2-slit1-16
+    );
+
+    yctx.fillRect(
+        slitX-5,
+        slit2+8,
+        10,
+        h-(slit2+8)
+    );
+
+
+    /* wave propagation */
+
+    const lambda=parseFloat(wavelength.value);
+
+    yctx.lineWidth=1;
+
+    for(let r=10;r<Math.max(w,h)*1.4;r+=lambda/5){
+
+        let radius=r+(t*speed.value)%50;
+
+        /* wave from slit 1 */
+
+        yctx.strokeStyle="rgba(34,211,238,.28)";
+        yctx.beginPath();
+
+        yctx.arc(
+            slitX,
+            slit1,
+            radius,
+            -Math.PI/2,
+            Math.PI/2
+        );
+
+        yctx.stroke();
+
+
+        /* wave from slit 2 */
+
+        yctx.strokeStyle="rgba(168,85,247,.28)";
+        yctx.beginPath();
+
+        yctx.arc(
+            slitX,
+            slit2,
+            radius,
+            -Math.PI/2,
+            Math.PI/2
+        );
+
+        yctx.stroke();
+    }
+
+
+    /* screen */
+
+    yctx.fillStyle="#cbd5e1";
+    yctx.fillRect(screenX,30,5,h-60);
+
+
+    /* interference pattern */
+
+    for(let y=30;y<h-30;y++){
+
+        const dy=y-center;
+
+        const phase=
+            (dy/(lambda*.65));
+
+        const intensityValue=
+            Math.pow(
+                Math.cos(phase*3),
+                2
+            );
+
+        const alpha=.08+intensityValue*.9;
+
+        yctx.fillStyle=
+            `rgba(255,255,255,${alpha})`;
+
+        yctx.fillRect(
+            screenX+8,
+            y,
+            35,
+            1
+        );
+    }
+
+
+    /* labels */
+
+    yctx.font="bold 14px Arial";
+
+    yctx.fillStyle="#60a5fa";
+    yctx.fillText("COHERENT LIGHT",10,25);
+
+    yctx.fillStyle="#67e8f9";
+    yctx.fillText("SLIT 1",slitX-28,slit1-15);
+
+    yctx.fillStyle="#c084fc";
+    yctx.fillText("SLIT 2",slitX-28,slit2+30);
+
+    yctx.fillStyle="#f8fafc";
+    yctx.fillText("SCREEN",screenX-25,20);
+
+
+    t+=1;
+
+    requestAnimationFrame(drawYoung);
+}
+
+
+wavelength.addEventListener("input",()=>{
+    waveValue.textContent=wavelength.value+" nm";
+});
+
+slitSeparation.addEventListener("input",()=>{
+    slitValue.textContent=slitSeparation.value;
+});
+
+speed.addEventListener("input",()=>{
+    speedValue.textContent=
+        parseFloat(speed.value).toFixed(1)+"×";
+});
+
+
+drawYoung();
+
+</script>
+
+</body>
+</html>
